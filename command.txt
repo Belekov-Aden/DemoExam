@@ -1,0 +1,2 @@
+pyqt5-tools designer
+pyuic5 -x .\main.ui -o new_file.py
