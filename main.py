@@ -1,6 +1,6 @@
 import sys
 
-from PyQt5 import QtWidgets
+from PyQt5 import QtWidgets, QtCore
 from PyQt5.QtWidgets import QApplication, QMainWindow, QMenuBar, QMenu
 
 
@@ -22,10 +22,14 @@ class Window(QMainWindow):
 
         file_menu = QMenu("&Файл", self)
 
-        open_file = file_menu.addMenu("&Открыть")
-        save_file = file_menu.addMenu("&Сохранить")
+        file_menu.addAction("Открыть", self.action_clicked)
+        file_menu.addAction("Сохранить", self.action_clicked)
 
         self.menu_bar.addMenu(file_menu)
+
+    @QtCore.pyqtSlot()
+    def action_clicked(self):
+        pass
 
 
 def application():
