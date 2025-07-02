@@ -1,7 +1,7 @@
 import sys
 
 from PyQt5 import QtWidgets, QtCore
-from PyQt5.QtWidgets import QApplication, QMainWindow, QMenuBar, QMenu
+from PyQt5.QtWidgets import QApplication, QMainWindow, QMenuBar, QMenu, QFileDialog
 
 
 class Window(QMainWindow):
@@ -29,7 +29,17 @@ class Window(QMainWindow):
 
     @QtCore.pyqtSlot()
     def action_clicked(self):
-        pass
+        action = self.sender()
+        if action.text() == "Открыть":
+            fname = QFileDialog.getOpenFileName(self)[0]
+
+            with open(fname, "r", encoding="utf-8") as f:
+                self.text_edit.setText(f.read())
+
+        elif action.text() == "Сохранить":
+            fname = QFileDialog.getSaveFileName(self)[0]
+            with open(fname, "w", encoding="utf-8") as f:
+                f.write(self.text_edit.toPlainText())
 
 
 def application():
