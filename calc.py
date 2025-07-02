@@ -9,6 +9,7 @@
 
 
 from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtWidgets import QMessageBox
 
 
 class Ui_MainWindow(object):
@@ -266,9 +267,8 @@ class Ui_MainWindow(object):
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
 
+        # own code
         self.is_equal = False
-
-
         self.add_functions()
 
     def retranslateUi(self, MainWindow):
@@ -318,9 +318,35 @@ class Ui_MainWindow(object):
             self.label_result.setText(self.label_result.text() + number)
 
     def results(self):
-        result = eval(self.label_result.text())
-        self.label_result.setText(str(result))
-        self.is_equal = True
+        if not self.is_equal:
+            result = eval(self.label_result.text())
+            self.label_result.setText(f'Результат: {str(result)}')
+            self.is_equal = True
+
+        else:
+            error = QMessageBox()
+            error.setWindowTitle('Ошибка')
+            error.setText('Сейчас это действие выполнить нельзя')
+            error.setIcon(QMessageBox.Warning)
+
+            error.setStandardButtons(QMessageBox.Ok|QMessageBox.Reset)
+
+            error.setInformativeText('Два раза действие не выполнить')
+            error.setDetailedText('Detail')
+
+            error.buttonClicked.connect(self.popup_action)
+
+            error.exec_()
+
+
+    def popup_action(self, btn):
+        if btn.text() == 'Ok':
+            print('Print ok')
+
+        elif btn.text() == 'Reset':
+            self.label_result.setText('0')
+            self.is_equal = False
+
 
 
 if __name__ == "__main__":
