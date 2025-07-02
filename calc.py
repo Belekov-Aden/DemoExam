@@ -329,7 +329,7 @@ class Ui_MainWindow(object):
             error.setText('Сейчас это действие выполнить нельзя')
             error.setIcon(QMessageBox.Warning)
 
-            error.setStandardButtons(QMessageBox.Ok|QMessageBox.Reset)
+            error.setStandardButtons(QMessageBox.Ok|QMessageBox.Reset|QMessageBox.Cancel)
 
             error.setInformativeText('Два раза действие не выполнить')
             error.setDetailedText('Detail')
