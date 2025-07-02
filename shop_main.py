@@ -11,7 +11,6 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         self.setupUi(self)
 
         self.db = Database()
-
         self.load_data()
 
     def load_data(self):
