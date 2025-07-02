@@ -23,7 +23,8 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
                                                       categories.name AS category_name,
                                                       products.price
                                                FROM products
-                                                        JOIN categories ON products.categories = categories.id
+                                                   JOIN categories
+                                               ON products.categories = categories.id
                                                """)
 
         self.data_products.setColumnCount(3)
@@ -33,6 +34,8 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
             self.data_products.setItem(row_index, 0, QtWidgets.QTableWidgetItem(str(row['name'])))
             self.data_products.setItem(row_index, 1, QtWidgets.QTableWidgetItem(str(row['category_name'])))
             self.data_products.setItem(row_index, 2, QtWidgets.QTableWidgetItem(str(row['price'])))
+
+        self.db.close()
 
 
 if __name__ == "__main__":
