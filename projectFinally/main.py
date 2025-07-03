@@ -196,8 +196,6 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         super().__init__()
         self.setupUi(self)
 
-
-
         self.setWindowTitle("Склад")
         self.btn_add_category.clicked.connect(self.add_category)
 
@@ -228,27 +226,15 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         add_category_form.exec_()
 
     def setup_cards_layout(self):
-        # Удаляем старые виджеты из cards_layout (категории)
-        if hasattr(self, 'cards_layout'):
-            while self.cards_layout.count():
-                item = self.cards_layout.takeAt(0)
-                widget = item.widget()
-                if widget is not None:
-                    widget.deleteLater()
-        else:
-            self.cards_layout = QtWidgets.QVBoxLayout()
-            self.scrollAreaWidgetContents.setLayout(self.cards_layout)
+        # Категории
+        new_categories_container = QtWidgets.QWidget()
+        self.cards_layout = QtWidgets.QVBoxLayout(new_categories_container)
+        self.scrollArea.setWidget(new_categories_container)
 
-        # Удаляем старые виджеты из card_layout_products (товары)
-        if hasattr(self, 'card_layout_products'):
-            while self.card_layout_products.count():
-                item = self.card_layout_products.takeAt(0)
-                widget = item.widget()
-                if widget is not None:
-                    widget.deleteLater()
-        else:
-            self.card_layout_products = QtWidgets.QVBoxLayout()
-            self.scrollAreaProducts.setLayout(self.card_layout_products)
+        # Товары
+        new_products_container = QtWidgets.QWidget()
+        self.card_layout_products = QtWidgets.QVBoxLayout(new_products_container)
+        self.scrollAreaProducts.setWidget(new_products_container)
 
     def add_product_card(self, id_, name, category, count, price):
         card = CardProductsWidget(id_, name, category, count, price, parent_window=self)
