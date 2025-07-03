@@ -145,7 +145,7 @@ class CardCategoriesWidget(QtWidgets.QWidget, Ui_Form):
         self.btn_del_categories.clicked.connect(self.delete_category)
 
     def change_category(self):
-        form_change_category = FormCategoryChange(self, self.id_, self.name_label_categories.text())
+        form_change_category = FormCategoryChange(self.parent, self.id_, self.name_label_categories.text())
         form_change_category.exec_()
 
     def delete_category(self):
@@ -195,6 +195,8 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
     def __init__(self):
         super().__init__()
         self.setupUi(self)
+
+
 
         self.setWindowTitle("Склад")
         self.btn_add_category.clicked.connect(self.add_category)
