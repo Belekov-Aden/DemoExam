@@ -54,6 +54,52 @@ class FormCategoryAdd(QtWidgets.QDialog, FormCategoryAddTemplate):
             print(e)
 
 
+class FormProductsChange(QtWidgets.QDialog, FormProductsTemplate):
+    def __init__(self, id_, name, category_id, price, count, parent):
+        super().__init__()
+        self.setupUi(self)
+
+        self.setWindowTitle("Изменение продукта")
+        self.btn_add_product.setText('Сохранить')
+
+        self.db = Database()
+        self.parent = parent
+        self.product_id = id_
+
+        self.lbl_name_product.setPlainText(name)
+        self.lbl_price_product.setPlainText(str(price))
+        self.lbl_count_product.setPlainText(str(count))
+
+        self.load_categories(category_id)  # ← передаём id текущей категории
+
+        self.btn_add_product.clicked.connect(self.save_product)
+
+    def save_product(self):
+        try:
+
+            self.db.execute('UPDATE products SET name = %s, categories = %s, price = %s, count = %s WHERE id = %s  ',
+                            (self.lbl_name_product.toPlainText(), self.categoriesComboBox.currentData(),
+                             str(self.lbl_price_product.toPlainText()), str(self.lbl_count_product.toPlainText()),
+                             self.product_id))
+
+            self.parent.load_data()
+            self.close()
+        except Exception as e:
+            print(e)
+
+    def load_categories(self, selected_category_id):
+
+        self.categories = self.db.fetch_all('SELECT * FROM categories ORDER BY id')
+
+        for row in self.categories:
+            self.categoriesComboBox.addItem(row["name"], row["id"])
+
+        # установить текущую категорию
+        index = self.categoriesComboBox.findData(selected_category_id)
+        if index != -1:
+            self.categoriesComboBox.setCurrentIndex(index)
+
+
 class FormProductsAdd(QtWidgets.QDialog, FormProductsTemplate):
     def __init__(self, parent):
         super().__init__()
@@ -111,17 +157,38 @@ class CardCategoriesWidget(QtWidgets.QWidget, Ui_Form):
 
 
 class CardProductsWidget(QtWidgets.QWidget, CardProductsTemplate):
-    def __init__(self, id_, name, category, count, price, parent_window):
+    def __init__(self, id_, name, category_id, count, price, parent_window):
         super().__init__()
         self.setupUi(self)
 
         self.id_ = id_
+        self.category_id = category_id  # ← сохраняем id категории
+        self.price = price
+        self.count = count
 
         self.parent_window = parent_window
 
         self.lbl_name.setText(name)
-        self.lbl_category.setText(str(category))
+        self.lbl_category.setText(self.get_category_name_by_id(category_id))  # ← выводим имя
         self.lbl_count_and_price.setText(f'{count} / {price}')
+
+        self.btn_change_products.clicked.connect(self.change_products)
+
+    def get_category_name_by_id(self, category_id):
+        db = Database()
+        row = db.fetch_one('SELECT name FROM categories WHERE id = %s', (category_id,))
+        return row["name"] if row else "Неизвестно"
+
+    def change_products(self):
+        form_change_product = FormProductsChange(
+            id_=self.id_,
+            name=self.lbl_name.text(),
+            category_id=self.category_id,  # ← добавь это поле
+            price=self.price,
+            count=self.count,
+            parent=self.parent_window
+        )
+        form_change_product.exec_()
 
 
 class Window(QtWidgets.QMainWindow, Ui_MainWindow):
